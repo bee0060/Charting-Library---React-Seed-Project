@@ -10,7 +10,26 @@ class Chart extends React.Component {
 		super(props);
 	}
 	componentDidMount() {
-		this.props.setChartContainer($$$('#chartContainer'))
+		this.props.setChartContainer($$$('#chartContainer'), {
+			studyOverlayEdit: this.props.toggleStudyOverlay,
+			studyPanelEdit: this.props.openStudyModal
+		})
+	}
+	componentWillReceiveProps(nextProps) {
+		if (this.props.ciq !== nextProps.ciq) {
+			nextProps.ciq.callbacks.layout = this.props.saveLayout;
+
+			let funcs = [];
+			Object.keys(this.props).map((key) => {
+				let prop = this.props[key];
+				if (typeof prop === 'function') {
+					funcs[key] = prop
+				}
+			});
+
+			window.actions = funcs
+			window.stxx = nextProps.ciq
+		}
 	}
 	render() {
 		return (
